@@ -36,10 +36,23 @@ window.transfer = function () {
   })
 }
 
-function getContractBalance() {
+window.sendEthToContract = () => {
+  const ethToSend = web3.toWei($('#ethToSend').val(), 'ether')
+  const fromAddress = $('#fromAddress').val()
+  console.log('eth', ethToSend, 'from address ', fromAddress)
+  return MintToken.deployed().then((contractInstance) => {    
+    return contractInstance.sendEthToContract({ value: ethToSend, from: fromAddress })
+  })
+  .then((result) => {
+    return getContractBalance()
+  })
+}
+
+function getContractBalance () {
   return MintToken.deployed().then((contractInstance) => {
     web3.eth.getBalance(contractInstance.address, function (error, result) {
       if (error) console.error(error)
+      console.log(result.toString())
       if (result.toString() === '0') $('#contractBalance').html(web3.fromWei(0))
       else $('#contractBalance').html(web3.fromWei(result.toString()))
     })
