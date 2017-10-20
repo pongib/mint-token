@@ -36,6 +36,16 @@ window.transfer = function () {
   })
 }
 
+function getContractBalance() {
+  return MintToken.deployed().then((contractInstance) => {
+    web3.eth.getBalance(contractInstance.address, function (error, result) {
+      if (error) console.error(error)
+      if (result.toString() === '0') $('#contractBalance').html(web3.fromWei(0))
+      else $('#contractBalance').html(web3.fromWei(result.toString()))
+    })
+  })
+}
+
 $(document).ready(function () {
   if (typeof web3 !== 'undefined') {
     console.warn('Using web3 detected from external source like Metamask')
@@ -49,4 +59,5 @@ $(document).ready(function () {
   $('#userBalance').html(0)
 
   MintToken.setProvider(web3.currentProvider)
+  getContractBalance()
 })
