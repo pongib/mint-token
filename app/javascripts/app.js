@@ -8,9 +8,10 @@ import { default as contract } from 'truffle-contract'
 import mintTokenArtifacts from '../../build/contracts/MintToken.json'
 
 var MintToken = contract(mintTokenArtifacts)
+let userAddress = null
 
 window.getUserBalance = function () {
-  const userAddress = $('#userAddress').val()
+  userAddress = $('#userAddress').val()
   MintToken.deployed().then(function (contractInstance) {
     contractInstance.getUserBalance.call(userAddress)
       .then((result) => {
@@ -24,8 +25,11 @@ window.transfer = function () {
   const amount = $('#amount').val()
   MintToken.deployed().then(function (contractInstance) {
     console.log('address', toAddress)
-    console.log('amount', web3.toWei(amount, 'ether'))
-    contractInstance.transfer(toAddress, web3.toWei(amount, 'ether'), { gas: 150000, from: web3.eth.accounts[0] })
+    console.log('amount', amount)
+    contractInstance.transfer(toAddress, amount, { gas: 150000, from: web3.eth.accounts[0] })
+      .then((result) => {
+        return contractInstance.getUserBalance.call(userAddress)        
+      })
       .then((result) => {
         $('#userBalance').html(result.toString())
       })
