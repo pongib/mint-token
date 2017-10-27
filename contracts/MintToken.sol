@@ -1,7 +1,7 @@
 pragma solidity ^0.4.15;
 
 contract MintToken {
-
+  // help clients like the Ethereum Wallet keep track of activities happening in the contract
   event Transfer (address indexed from, address indexed to, uint256 value);
 
   mapping (address => uint256) public balanceOf;
