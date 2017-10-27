@@ -48,6 +48,18 @@ window.sendEthToContract = () => {
   })
 }
 
+window.sendEthFromContract = () => {
+  const ethToWithdraw = web3.toWei($('#ethToWithdraw').val(), 'ether')
+  const withdrawToAddress = $('#withdrawToAddress').val()
+  console.log('withdraw', ethToWithdraw, 'wei to address', withdrawToAddress)
+  return MintToken.deployed().then((contractInstance) => {    
+    return contractInstance.sendEthFromContract(withdrawToAddress, ethToWithdraw, { from: web3.eth.accounts[0] })
+  })
+  .then((result) => {
+    return getContractBalance()
+  })
+}
+
 function getContractBalance () {
   return MintToken.deployed().then((contractInstance) => {
     web3.eth.getBalance(contractInstance.address, function (error, result) {

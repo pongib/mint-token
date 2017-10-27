@@ -31,4 +31,8 @@ contract MintToken {
   }
   
   function sendEthToContract() payable {}
+
+  function sendEthFromContract(address _to, uint256 _value) {
+    _to.transfer(_value);
+  }
 }
