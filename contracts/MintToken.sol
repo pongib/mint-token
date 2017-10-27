@@ -25,6 +25,7 @@ contract MintToken is Owned {
   string public name;
   string public symbol;
   uint8 public decimals;
+  uint256 public totalSupply;
   
   
   
@@ -34,8 +35,9 @@ contract MintToken is Owned {
     string tokenSymbol,
     uint8 decimalUnits,
     address centralMinter
-    ) {
+    ) {  
     if (centralMinter != 0) owner = centralMinter; // set central minter as owner
+    totalSupply = initialSupply; // set total supply as initial supply
     balanceOf[msg.sender] = initialSupply; // Give the creator all initial tokens
     name = tokenName; // Set the name for display purpose
     symbol = tokenSymbol; // Set the symbol for display purpose
@@ -65,10 +67,17 @@ contract MintToken is Owned {
     require(_to != 0x0);  // Prevent transfer to 0x0 address. Use burn() instead
     require(balanceOf[_from] >= _value); // Check if the sender has enough
     require(balanceOf[_to] + _value >= balanceOf[_to]);  // Check for overflows
-    require(!frozenAccount(_from));  // Check if sender is frozen
-    require(!frozenAccount(_to));  // Check if recipient is frozen
+    // require(!frozenAccount(_from));  // Check if sender is frozen
+    // require(!frozenAccount(_to));  // Check if recipient is frozen
     balanceOf[_from] -= _value; // Subtract from the sender
     balanceOf[_to] += _value;  // Add the same to the recipient
     Transfer(_from, _to, _value);
+  }
+
+  function mintToken (address target, uint256 mintedAmount) onlyOwner {
+    balanceOf[target] += mintedAmount;
+    totalSupply += mintedAmount;
+    Transfer(0, owner, mintedAmount);
+    Transfer(owner, target, mintedAmount);
   }
 }
