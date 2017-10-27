@@ -1,5 +1,22 @@
 pragma solidity ^0.4.15;
 
+contract owned {
+  address public owner;
+
+  function owned () {
+    owner = msg.sender;
+  }
+  
+  modifier onlyOwner {
+    require(msg.sender == owner);
+    _; // why need to add this line?
+  }
+
+  function transferOwnership(address newOwner) onlyOwner {
+    owner = newOwner;
+  }
+}
+
 contract MintToken {
   // help clients like the Ethereum Wallet keep track of activities happening in the contract
   event Transfer (address indexed from, address indexed to, uint256 value);
