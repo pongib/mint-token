@@ -20,14 +20,15 @@ contract Owned {
 contract MintToken is Owned {
   // help clients like the Ethereum Wallet keep track of activities happening in the contract
   event Transfer (address indexed from, address indexed to, uint256 value);
+  event FrozenFunds (address target, bool frozen);
 
   mapping (address => uint256) public balanceOf;
+  mapping (address => bool) public frozenAccount;
+
   string public name;
   string public symbol;
   uint8 public decimals;
   uint256 public totalSupply;
-  
-  
   
   function MintToken (
     uint256 initialSupply,
@@ -79,5 +80,10 @@ contract MintToken is Owned {
     totalSupply += mintedAmount;
     Transfer(0, owner, mintedAmount);
     Transfer(owner, target, mintedAmount);
+  }
+  
+  function freezeAccount (address target, bool freeze) onlyOwner {
+    frozenAccount[target] = freeze;
+    FrozenFunds(target, freeze);
   }
 }
