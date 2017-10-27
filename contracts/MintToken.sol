@@ -1,9 +1,9 @@
 pragma solidity ^0.4.15;
 
-contract owned {
+contract Owned {
   address public owner;
 
-  function owned () {
+  function Owned () {
     owner = msg.sender;
   }
   
@@ -17,7 +17,7 @@ contract owned {
   }
 }
 
-contract MintToken {
+contract MintToken is Owned {
   // help clients like the Ethereum Wallet keep track of activities happening in the contract
   event Transfer (address indexed from, address indexed to, uint256 value);
 
@@ -28,7 +28,14 @@ contract MintToken {
   
   
   
-  function MintToken (uint256 initialSupply, string tokenName, string tokenSymbol, uint8 decimalUnits) {
+  function MintToken (
+    uint256 initialSupply,
+    string tokenName,
+    string tokenSymbol,
+    uint8 decimalUnits,
+    address centralMinter
+    ) {
+    if (centralMinter != 0) owner = centralMinter; // set central minter as owner
     balanceOf[msg.sender] = initialSupply; // Give the creator all initial tokens
     name = tokenName; // Set the name for display purpose
     symbol = tokenSymbol; // Set the symbol for display purpose
